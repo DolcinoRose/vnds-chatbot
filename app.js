@@ -68,28 +68,40 @@ app.post('/webhook', function (req, res) {
 							}
 							break;
 
-						case 'accountInquiry':
-							fb.sendTextMessage(senderId, `Dạ, ${user.pronounce} muốn xem danh mục đầu tư ạ, ${user.pronounce} vui lòng đợi em một lát ạ...`);
-							fb.pretendTyping(senderId);
-							tradeApi.displayAccount('0001032425').then(function(data) {
-								setTimeout(function() {
-									fb.sendTextMessage(senderId, data[0]);
-								}, messageGapTime);
-								var count = 0;
-								for (let stockInfoDataTextItem of data[1]) {
-									count++;
-									// send facebook messages for stock info in order
-									setTimeout(function() {
-										fb.sendTextMessage(senderId, stockInfoDataTextItem);
-									}, count*messageGapTime);
-								}
-							});
-							break;
-
 						//TODO: switch to a formal greeting line.
 						case 'sayHi':
 							fb.sendTextMessage(senderId, `⭐⭐Chào ${user.pronounce} ${user.fbProfile.first_name} ạ!⭐⭐\nEm là Maria Minh Hương, em có thể giúp ${user.pronounce} xem giá chứng khoán, giá dầu, vàng, tỷ giá.\nRất hân hạnh được phục vụ ${user.pronounce}!`);
 							break;
+
+						case 'commoditiesPrice':
+							if (entities.commodity) {
+								if (entities.commodity[0].value == 'oil') {
+									fb.sendTextMessage(senderId, `Giá dầu hôm nay là...`);
+
+								} else if (entities.commodity[0].value == 'gold') {
+									fb.sendTextMessage(senderId, `Giá vàng hôm nay như sau...`);
+								}
+							}
+							break;
+
+						// TODO: login then query real account data
+						// case 'accountInquiry':
+						// 	fb.sendTextMessage(senderId, `Dạ, ${user.pronounce} muốn xem danh mục đầu tư ạ, ${user.pronounce} vui lòng đợi em một lát ạ...`);
+						// 	fb.pretendTyping(senderId);
+						// 	tradeApi.displayAccount('0001032425').then(function(data) {
+						// 		setTimeout(function() {
+						// 			fb.sendTextMessage(senderId, data[0]);
+						// 		}, messageGapTime);
+						// 		var count = 0;
+						// 		for (let stockInfoDataTextItem of data[1]) {
+						// 			count++;
+						// 			// send facebook messages for stock info in order
+						// 			setTimeout(function() {
+						// 				fb.sendTextMessage(senderId, stockInfoDataTextItem);
+						// 			}, count*messageGapTime);
+						// 		}
+						// 	});
+						// 	break;
 
 						// TODO: fix with real market advice in the future
 						// case 'marketAdvice':
